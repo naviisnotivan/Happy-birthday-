@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Happy Birthday! 🎁</title>
+
+<style>
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        margin: 0;
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        overflow: hidden;
+        background: linear-gradient(135deg, #fff4d6, #ffe4ec);
+        font-family: Arial, sans-serif;
+    }
+
+    .container {
+        text-align: center;
+    }
+
+    .instruction {
+        font-size: 20px;
+        color: #6b4b4b;
+        margin-bottom: 25px;
+        animation: float 2s ease-in-out infinite;
+    }
+
+    /* GIFT */
+    .gift {
+        position: relative;
+        width: 220px;
+        height: 190px;
+        margin: auto;
+        cursor: pointer;
+        transition: transform 0.3s ease;
+    }
+
+    .gift:hover {
+        transform: scale(1.05);
+    }
+
+    .box {
+        position: absolute;
+        bottom: 0;
+        left: 10px;
+        width: 200px;
+        height: 145px;
+        background: #f5b942;
+        border-radius: 8px;
+        box-shadow: 0 12px 25px rgba(0,0,0,0.15);
+        overflow: hidden;
+    }
+
+    /* Ribbon down the middle */
+    .box::before {
+        content: "";
+        position: absolute;
+        left: 82px;
+        top: 0;
+        width: 36px;
+        height: 100%;
+        background: #e85d75;
+    }
+
+    /* Lid */
+    .lid {
+        position: absolute;
+        top: 25px;
+        left: 0;
+        width: 220px;
+        height: 45px;
+        background: #f7c957;
+        border-radius: 8px;
+        z-index: 3;
+        box-shadow: 0 7px 10px rgba(0,0,0,0.12);
+        transition:
+            transform 1s ease,
+            opacity 0.8s ease;
+    }
+
+    .lid::after {
+        content: "";
+        position: absolute;
+        left: 92px;
+        top: 0;
+        width: 36px;
+        height: 45px;
+        background: #e85d75;
+    }
+
+    /* Bow */
+    .bow {
+        position: absolute;
+        top: -15px;
+        left: 73px;
+        width: 75px;
+        height: 50px;
+        z-index: 5;
+        transition:
+            transform 1s ease,
+            opacity 0.8s ease;
+    }
+
+    .bow::before,
+    .bow::after {
+        content: "";
+        position: absolute;
+        width: 42px;
+        height: 30px;
+        background: #e85d75;
+        border-radius: 50% 50% 10% 50%;
+    }
+
+    .bow::before {
+        left: 0;
+        transform: rotate(25deg);
+    }
+
+    .bow::after {
+        right: 0;
+        transform: rotate(-25deg);
+    }
+
+    .knot {
+        position: absolute;
+        left: 29px;
+        top: 10px;
+        width: 20px;
+        height: 20px;
+        background: #d94c68;
+        border-radius: 50%;
+        z-index: 2;
+    }
+
+    /* Hidden birthday image */
+    .birthday-image {
+        position: fixed;
+        left: 50%;
+        top: 50%;
+        width: min(90vw, 500px);
+        max-height: 85vh;
+        object-fit: contain;
+
+        transform: translate(-50%, -50%) scale(0);
+        opacity: 0;
+
+        border-radius: 18px;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+
+        transition:
+            transform 1s cubic-bezier(.17,.89,.32,1.3),
+            opacity 0.8s ease;
+
+        z-index: 10;
+    }
+
+    /* Dark background behind revealed image */
+    .overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.65);
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.8s ease;
+        z-index: 9;
+    }
+
+    /* OPENED STATE */
+    .opened .lid {
+        transform: translateY(-180px) rotate(-12deg);
+        opacity: 0;
+    }
+
+    .opened .bow {
+        transform: translateY(-200px) rotate(20deg);
+        opacity: 0;
+    }
+
+    .opened .box {
+        transform: scale(0);
+        opacity: 0;
+        transition: transform 0.7s ease, opacity 0.7s ease;
+    }
+
+    .opened .birthday-image {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 1;
+    }
+
+    .opened .overlay {
+        opacity: 1;
+        pointer-events: auto;
+    }
+
+    /* Confetti */
+    .confetti {
+        position: fixed;
+        top: -20px;
+        width: 10px;
+        height: 18px;
+        opacity: 0;
+        z-index: 20;
+    }
+
+    .opened .confetti {
+        animation: fall 3s linear forwards;
+    }
+
+    .confetti:nth-child(1) { left: 10%; animation-delay: 0s; }
+    .confetti:nth-child(2) { left: 20%; animation-delay: .3s; }
+    .confetti:nth-child(3) { left: 30%; animation-delay: .6s; }
+    .confetti:nth-child(4) { left: 40%; animation-delay: .1s; }
+    .confetti:nth-child(5) { left: 50%; animation-delay: .5s; }
+    .confetti:nth-child(6) { left: 60%; animation-delay: .2s; }
+    .confetti:nth-child(7) { left: 70%; animation-delay: .7s; }
+    .confetti:nth-child(8) { left: 80%; animation-delay: .4s; }
+    .confetti:nth-child(9) { left: 90%; animation-delay: .8s; }
+
+    @keyframes fall {
+        0% {
+            opacity: 1;
+            transform: translateY(0) rotate(0deg);
+        }
+
+        100% {
+            opacity: 0;
+            transform: translateY(110vh) rotate(720deg);
+        }
+    }
+
+    @keyframes float {
+        0%, 100% {
+            transform: translateY(0);
+        }
+
+        50% {
+            transform: translateY(-6px);
+        }
+    }
+
+    .close {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 30;
+
+        padding: 10px 16px;
+        border: none;
+        border-radius: 20px;
+
+        background: white;
+        color: #6b4b4b;
+        font-size: 15px;
+
+        cursor: pointer;
+        opacity: 0;
+        pointer-events: none;
+
+        transition: opacity 0.5s ease;
+    }
+
+    .opened .close {
+        opacity: 1;
+        pointer-events: auto;
+    }
+</style>
+</head>
+
+<body>
+
+<div class="container" id="giftContainer">
+
+    <div class="instruction">
+        🎁 Tap the gift to open it! 🎁
+    </div>
+
+    <div class="gift" onclick="openGift()">
+
+        <div class="box"></div>
+
+        <div class="lid"></div>
+
+        <div class="bow">
+            <div class="knot"></div>
+        </div>
+
+    </div>
+
+    <!-- Confetti -->
+    <div class="confetti"></div>
+    <div class="confetti"></div>
+    <div class="confetti"></div>
+    <div class="confetti"></div>
+    <div class="confetti"></div>
+    <div class="confetti"></div>
+    <div class="confetti"></div>
+    <div class="confetti"></div>
+    <div class="confetti"></div>
+
+    <!-- Dark overlay -->
+    <div class="overlay" onclick="closeGift()"></div>
+
+    <!-- YOUR BIRTHDAY IMAGE -->
+    <img
+        class="birthday-image"
+        src="birthday.jpg"
+        alt="Birthday greeting"
+    >
+
+    <button class="close" onclick="closeGift()">
+        ✕ Close
+    </button>
+
+</div>
+
+<script>
+
+function openGift() {
+    document
+        .getElementById("giftContainer")
+        .classList.add("opened");
+}
+
+function closeGift() {
+    document
+        .getElementById("giftContainer")
+        .classList.remove("opened");
+}
+
+</script>
+
+</body>
+  </html>
